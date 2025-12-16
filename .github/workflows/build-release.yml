@@ -79,7 +79,10 @@ jobs:
           fi
           cd -
           file "$CACHE_DIR_SDK/$SDK_FILE"
-          7z x "$CACHE_DIR_SDK/$SDK_FILE" -so | tar -C "$SDK_HOME" -xvf - --strip=1
+          # Install zstd for .tar.zst support (OpenWrt 24.10+)
+          sudo apt-get install -y zstd
+          # Extract using zstd + tar
+          zstd -dc "$CACHE_DIR_SDK/$SDK_FILE" | tar -C "$SDK_HOME" -xvf - --strip=1
           cd "$SDK_HOME"
           test -d "dl" && rm -rf "dl" || true
           test -d "feeds" && rm -rf "feeds" || true
